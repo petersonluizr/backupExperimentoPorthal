@@ -8,15 +8,23 @@ package br.com.porthal.experimento.resources;
 import br.com.porthal.experimento.ejb.ClienteSession;
 import br.com.porthal.experimento.ejb.NotaFiscalSession;
 import br.com.porthal.experimento.ejb.PlanoSession;
+import br.com.porthal.experimento.entity.Cliente;
+import br.com.porthal.experimento.entity.NotaFiscal;
+import br.com.porthal.experimento.entity.PlanoConta;
 import br.com.porthal.experimento.entity.Retorno;
+import java.util.ArrayList;
+import java.util.List;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 /**
@@ -59,5 +67,37 @@ public class PlanoContaResourceTest extends JerseyTest {
         Entity<String> userEntity = Entity.entity(xml, MediaType.TEXT_PLAIN);
         Retorno resposta = target("planoconta").request().post(userEntity, Retorno.class);
         Assert.assertEquals("Plano importado com sucesso", resposta.getDescricao());
+    }
+    
+    @Test
+    public void testConsultarNF1(){
+        Response response = target("planoconta/consultarnotasfiscais").request().get();
+        Retorno resposta = response.readEntity(Retorno.class);
+        Assert.assertEquals("O parâmetro fornecido não é um número.", resposta.getDescricao());
+    }
+    
+    @Test
+    public void testConsultarNF2(){
+        Mockito.when(planoSession.consultarNotasFiscais(70)).thenReturn(null);
+        
+        Response response = target("planoconta/consultarnotasfiscais").queryParam("id", "70").request().get();
+        Retorno resposta2 = response.readEntity(Retorno.class);
+        Assert.assertEquals("O plano de conta com o id especificado não existe no sistema.", resposta2.getDescricao());
+    }
+    
+    @Test
+    public void testConsultarNF3(){
+        List<NotaFiscal> lista = new ArrayList<>();
+        Cliente cliente = new Cliente();
+        NotaFiscal nota = new NotaFiscal();
+        
+        nota.setId(8);
+        nota.setNumero(1321l);
+        
+        Mockito.when(planoSession.consultarNotasFiscais(70)).thenReturn(lista);
+        
+        Response response = target("planoconta/consultarnotasfiscais").queryParam("id", "70").request().get();
+        Retorno resposta2 = response.readEntity(Retorno.class);
+        Assert.assertEquals("O plano de conta com o id especificado não existe no sistema.", resposta2.getDescricao());
     }
 }
