@@ -2,14 +2,17 @@
  */
 package br.com.porthal.experimento.resources;
 
+import br.com.porthal.experimento.ejb.ClienteSession;
 import br.com.porthal.experimento.ejb.NotaFiscalSession;
 import br.com.porthal.experimento.ejb.PlanoSession;
+import br.com.porthal.experimento.entity.Cliente;
 import br.com.porthal.experimento.entity.NotaFiscal;
 import br.com.porthal.experimento.entity.Retorno;
 import br.com.porthal.experimento.parse.Parser;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -26,9 +29,12 @@ public class PlanoContaResource {
 
     @Inject
     private PlanoSession planoSession;
-    
+
     @Inject
     private NotaFiscalSession notaSession;
+
+    @Inject
+    private ClienteSession clienteSession;
 
     @GET
     @Path("/")
@@ -46,7 +52,7 @@ public class PlanoContaResource {
         Retorno retorno = new Retorno();
         try {
             ArrayList<NotaFiscal> nfs = Parser.getNFs(txt);
-            this.getNotaSession().importar(nfs);
+            this.notaSession.importar(nfs);
             retorno.setSucesso(true);
             retorno.setDescricao("Plano importado com sucesso");
         } catch (Exception ex) {//implementar tratamento
@@ -81,7 +87,7 @@ public class PlanoContaResource {
         }
         return retorno;
     }
-    
+
     @GET
     @Path("/consultarsomanf")
     @Produces(MediaType.APPLICATION_XML)
@@ -90,20 +96,27 @@ public class PlanoContaResource {
         List<NotaFiscal> listaNotas;
         BigDecimal totalSoma;
         try {
-            listaNotas = this.getPlanoSession().consultarPorCliente(Integer.parseInt(clienteId));
-
-            if (listaNotas != null) {
-                retorno.setSucesso(true);
-                totalSoma = this.getPlanoSession().somarNotas(listaNotas);
-                if (totalSoma != null) {
-                    retorno.setDescricao("Valor da soma de NFs: " + totalSoma.toString());
+            Cliente c = clienteSession.getById(Integer.parseInt(clienteId));
+            System.out.println(c);
+            if (c != null) {
+                listaNotas = this.notaSession.consultarPorCliente(c);
+                System.out.println(listaNotas);
+                if (listaNotas != null && !listaNotas.isEmpty()) {
+                    retorno.setSucesso(true);
+                    totalSoma = this.notaSession.somarNotas(listaNotas);
+                    if (totalSoma != null) {
+                        retorno.setDescricao("Valor da soma de NFs: " + totalSoma.toString());
+                    } else {
+                        retorno.setSucesso(false);
+                        retorno.setDescricao("Não foi possível calcular o valor das notas fiscais.");
+                    }
                 } else {
                     retorno.setSucesso(false);
-                    retorno.setDescricao("Não foi possível calcular o valor das notas fiscais.");
+                    retorno.setDescricao("O cliente com o id especificado não possui notas fiscais.");
                 }
             } else {
                 retorno.setSucesso(false);
-                retorno.setDescricao("O cliente com o id especificado não existe no sistema ou não possui notas fiscais.");
+                retorno.setDescricao("O cliente com o id especificado não existe no sistema!");
             }
         } catch (NumberFormatException e) {
             retorno.setSucesso(false);
@@ -113,33 +126,5 @@ public class PlanoContaResource {
             retorno.setDescricao("Ocorreu um erro ao consultar: " + ex.getMessage());
         }
         return retorno;
-    }
-
-    /**
-     * @return the planoSession
-     */
-    public PlanoSession getPlanoSession() {
-        return planoSession;
-    }
-
-    /**
-     * @param planoSession the planoSession to set
-     */
-    public void setPlanoSession(PlanoSession planoSession) {
-        this.planoSession = planoSession;
-    }
-
-    /**
-     * @return the notaSession
-     */
-    public NotaFiscalSession getNotaSession() {
-        return notaSession;
-    }
-
-    /**
-     * @param notaSession the notaSession to set
-     */
-    public void setNotaSession(NotaFiscalSession notaSession) {
-        this.notaSession = notaSession;
     }
 }
