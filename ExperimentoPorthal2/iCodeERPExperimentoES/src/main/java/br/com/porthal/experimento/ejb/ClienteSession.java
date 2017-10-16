@@ -5,28 +5,22 @@
  */
 package br.com.porthal.experimento.ejb;
 
-import br.com.porthal.experimento.entity.NotaFiscal;
-import br.com.porthal.experimento.entity.PlanoConta;
-import br.com.porthal.experimento.entity.Produto;
+import br.com.porthal.experimento.entity.Cliente;
 import br.com.porthal.experimento.persistence.NewPersistence;
-import java.math.BigDecimal;
-import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
-import javax.persistence.criteria.Root;
-import org.hibernate.Criteria;
 
 /**
  *
- * @author Ecar. S. M.
+ * @author Porthal
  */
 @Stateless
 @LocalBean
-public class PlanoSession extends NewPersistence<PlanoConta, Integer> {
+public class ClienteSession extends NewPersistence<Cliente, Integer> {
 
     //<editor-fold defaultstate="collapsed" desc="INIT">
     @PersistenceContext(unitName = "iCodeERPExperimentoPU", name = "iCodeERPExperimentoPU", type = PersistenceContextType.TRANSACTION)
@@ -35,11 +29,11 @@ public class PlanoSession extends NewPersistence<PlanoConta, Integer> {
     @Override
     @PostConstruct
     public void init() {
-        this.object = new PlanoConta();
+        this.object = new Cliente();
     }
 
     @Override
-    public PlanoConta getObject() {
+    public Cliente getObject() {
         return this.object;
     }
 
@@ -48,26 +42,5 @@ public class PlanoSession extends NewPersistence<PlanoConta, Integer> {
         return this.entityManager;
     }
     //</editor-fold>
-
-    public List<NotaFiscal> consultarNotasFiscais(int idPlanoContas) {
-        List<NotaFiscal> listaNotas = null;
-        PlanoConta contaEncontrada = null;
-
-        try {
-            contaEncontrada = getById(idPlanoContas);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-
-        }
-
-        if (contaEncontrada != null) {
-            listaNotas = contaEncontrada.getNotasFiscais();
-        }
-
-        return listaNotas;
-    }
-
-   
-
+    
 }
