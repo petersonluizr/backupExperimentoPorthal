@@ -1,0 +1,9 @@
+<br.com.porthal.experimento.entity.ConfiguracaoFinanceiro>
+  <id>1</id>
+  <calcularJuro>true</calcularJuro>
+  <toleranciaAtrasoSemJuro>30</toleranciaAtrasoSemJuro>
+  <juroAtraso>2.00</juroAtraso>
+  <calcularMulta>true</calcularMulta>
+  <toleranciaAtrasoSemMulta>10</toleranciaAtrasoSemMulta>
+  <multaAtraso>10.00</multaAtraso>
+</br.com.porthal.experimento.entity.ConfiguracaoFinanceiro>

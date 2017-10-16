@@ -1,0 +1,28 @@
+Passo a Passo:
+1. Criar banco de dados no postgresql com o nome de iCodeDBExperimento(caso seja necessário um nome diferente alterar no servidor de aplicação).
+2. Abrir o projeto iCodeERPExperimentoES no netbeans.
+3. Adicionar o servidor de aplicação wildfly no netbeans (Ferramentas/ Servidores/ Adicionar Servidor..)
+4. Selecionar o servidor configurado no netbeans nas configurações do projeto (Propriedades/Executar/Servidor).
+5. O servidor já está configurado para conectar com o banco de dados, caso o usuário e senha do postgresql seja diferente da padrão (postgres, postgres) alterar as informações do datasource.
+6. Executar o projeto para as tabelas sejam criadas no banco iCodeDBExperimento.
+7. Executar query insert encontrada nas informações abaixo no gerenciador do banco de dados.
+6. Testar o serviço que retorna a configuração do financeiro com no caminho "porthal/configuracaofinanceiro".
+
+
+----- Informações do wildfly na pasta:
+	Versão: 9.0.2
+	Data source já configurado no standalone-full:
+		Nome do datasource: java:/iCodeExperimentoDS
+		Nome do banco: iCodeDBExperimento
+		Usuario: postgres
+		Senha: postgres
+
+------ Localização serviço post e get: 
+	http://localhost:8080/iCodeERPExperimentoES-1.0-SNAPSHOT/porthal/configuracaofinanceiro
+
+------ Insert da unica tabela no banco ou utilizar backup na pasta:
+	INSERT INTO public.configuracao_financeiro(
+            id, calcular_juro, calcular_multa, juro_atraso, multa_atraso, 
+            tolerancia_atraso_sem_juro, tolerancia_atraso_sem_multa)
+    	VALUES (1,'1','1',2.00,10.00,30,10);
+
