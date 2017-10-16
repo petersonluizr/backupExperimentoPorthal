@@ -52,9 +52,14 @@ public class PlanoContaResource {
         Retorno retorno = new Retorno();
         try {
             ArrayList<NotaFiscal> nfs = Parser.getNFs(txt);
-            this.notaSession.importar(nfs);
-            retorno.setSucesso(true);
-            retorno.setDescricao("Plano importado com sucesso");
+            if (this.notaSession.verificarCliente(nfs)) {
+                this.notaSession.importar(nfs);
+                retorno.setSucesso(true);
+                retorno.setDescricao("Plano importado com sucesso");
+            } else {
+                retorno.setSucesso(false);
+                retorno.setDescricao("Ocorreu um erro ao importar: Deve haver um único Cliente.");
+            }
         } catch (Exception ex) {//implementar tratamento
             retorno.setSucesso(false);
             retorno.setDescricao("Ocorreu um erro ao importar: " + ex.getMessage());
