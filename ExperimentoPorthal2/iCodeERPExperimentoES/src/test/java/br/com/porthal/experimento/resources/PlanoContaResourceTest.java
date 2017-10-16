@@ -10,10 +10,10 @@ import br.com.porthal.experimento.ejb.NotaFiscalSession;
 import br.com.porthal.experimento.ejb.PlanoSession;
 import br.com.porthal.experimento.entity.Cliente;
 import br.com.porthal.experimento.entity.NotaFiscal;
-import br.com.porthal.experimento.entity.PlanoConta;
 import br.com.porthal.experimento.entity.Retorno;
 import java.util.ArrayList;
 import java.util.List;
+import javax.transaction.Transactional;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -21,7 +21,6 @@ import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -37,7 +36,7 @@ public class PlanoContaResourceTest extends JerseyTest {
     private PlanoSession planoSession;
     @Mock
     private NotaFiscalSession notaFiscalSession;
-        @Mock
+    @Mock
     private ClienteSession clienteSession;
 
     @Override
@@ -55,11 +54,11 @@ public class PlanoContaResourceTest extends JerseyTest {
                 });
     }
 
-
     public PlanoContaResourceTest() {
     }
 
     @Test
+    @Transactional
     public void testPost() {
         String xml = "1;A;0;1;João;0;0;10/10/2017;1;João;229.42;20.0;249.42;{1;azul 25x25;batata;1;20.0;5.29;14.71;20.0;,2;vermelho 25x25;pimentão;10;220.0;5.29;214.71;50.0}\n"
                 + "2;S;1;1;João;2;1;10/11/2017;1;João;40.0;20.0;60.0;{3;verde 25x25;morango;1;10.0;0;10.0;20.0;4;,5;rosa 25x25;power ranger;10;40.0;10.0;30.0;50.0}";
@@ -68,34 +67,45 @@ public class PlanoContaResourceTest extends JerseyTest {
         Retorno resposta = target("planoconta").request().post(userEntity, Retorno.class);
         Assert.assertEquals("Plano importado com sucesso", resposta.getDescricao());
     }
-    
+
     @Test
-    public void testConsultarNF1(){
+    @Transactional
+    public void testPost002() {
+        String xml = "1;A;0;1;João;0;0;10/10/2017;1;João;229.42;20.0;249.42;{1;azul 25x25;batata;1;20.0;5.29;14.71;20.0;,2;vermelho 25x25;pimentão;10;220.0;5.29;214.71;50.0}\n"
+                + "2;S;1;1;João;;1;;1;João;;20.0;;{3;verde 25x25;morango;1;10.0;0;10.0;20.0;4;,5;rosa 25x25;power ranger;10;40.0;10.0;30.0;50.0}";
+        
+        Entity<String> userEntity = Entity.entity(xml, MediaType.TEXT_PLAIN);
+        Retorno resposta = target("planoconta").request().post(userEntity, Retorno.class);
+        Assert.assertEquals("Plano importado com sucesso", resposta.getDescricao());
+    }
+
+    @Test
+    public void testConsultarNF1() {
         Response response = target("planoconta/consultarnotasfiscais").request().get();
         Retorno resposta = response.readEntity(Retorno.class);
         Assert.assertEquals("O parâmetro fornecido não é um número.", resposta.getDescricao());
     }
-    
+
     @Test
-    public void testConsultarNF2(){
+    public void testConsultarNF2() {
         Mockito.when(planoSession.consultarNotasFiscais(70)).thenReturn(null);
-        
+
         Response response = target("planoconta/consultarnotasfiscais").queryParam("id", "70").request().get();
         Retorno resposta2 = response.readEntity(Retorno.class);
         Assert.assertEquals("O plano de conta com o id especificado não existe no sistema.", resposta2.getDescricao());
     }
-    
+
     @Test
-    public void testConsultarNF3(){
+    public void testConsultarNF3() {
         List<NotaFiscal> lista = new ArrayList<>();
         Cliente cliente = new Cliente();
         NotaFiscal nota = new NotaFiscal();
-        
+
         nota.setId(8);
         nota.setNumero(1321l);
-        
+
         Mockito.when(planoSession.consultarNotasFiscais(70)).thenReturn(lista);
-        
+
         Response response = target("planoconta/consultarnotasfiscais").queryParam("id", "70").request().get();
         Retorno resposta2 = response.readEntity(Retorno.class);
         Assert.assertEquals("O plano de conta com o id especificado não existe no sistema.", resposta2.getDescricao());
