@@ -44,6 +44,18 @@ public class PlanoContaResource {
         return null;
     }
 
+    public boolean verificarCliente(List<NotaFiscal> nfs) {
+        for (NotaFiscal notaFiscal : nfs) {
+            System.out.println(notaFiscal.getCliente().getId());
+            System.out.println(notaFiscal.getPlanoConta().getCliente().getId());
+            System.out.println("-----------------");
+            if (!notaFiscal.getCliente().getId().equals(notaFiscal.getPlanoConta().getCliente().getId())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     @POST
     @Path("/")
     @Consumes(MediaType.TEXT_PLAIN)
@@ -52,7 +64,8 @@ public class PlanoContaResource {
         Retorno retorno = new Retorno();
         try {
             ArrayList<NotaFiscal> nfs = Parser.getNFs(txt);
-            if (this.notaSession.verificarCliente(nfs)) {
+
+            if (verificarCliente(nfs)) {
                 this.notaSession.importar(nfs);
                 retorno.setSucesso(true);
                 retorno.setDescricao("Plano importado com sucesso");
