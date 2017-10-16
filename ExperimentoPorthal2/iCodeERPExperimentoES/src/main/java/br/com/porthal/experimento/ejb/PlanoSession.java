@@ -55,14 +55,13 @@ public class PlanoSession extends NewPersistence<PlanoConta, Integer> {
 
         try {
             contaEncontrada = getById(idPlanoContas);
+            if (contaEncontrada != null) {
+                listaNotas = listByCriteria("planoConta", contaEncontrada, NotaFiscal.class, "id");
+            }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
 
-        }
-
-        if (contaEncontrada != null) {
-            listaNotas = contaEncontrada.getNotasFiscais();
         }
 
         return listaNotas;
