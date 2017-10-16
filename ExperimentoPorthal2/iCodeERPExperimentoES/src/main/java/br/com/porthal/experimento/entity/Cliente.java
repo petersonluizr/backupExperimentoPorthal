@@ -19,7 +19,7 @@ import javax.validation.constraints.NotNull;
  * @author Ecar. S. M.
  */
 @Entity
-@Table(name = "Cliente")
+@Table(name = "CLIENTE")
 public class Cliente implements Serializable, MyInterfaceEntity {
 
     @Id

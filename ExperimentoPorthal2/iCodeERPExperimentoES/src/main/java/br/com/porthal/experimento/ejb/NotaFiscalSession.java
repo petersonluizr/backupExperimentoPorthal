@@ -5,11 +5,13 @@
  */
 package br.com.porthal.experimento.ejb;
 
+import br.com.porthal.experimento.entity.Cliente;
 import br.com.porthal.experimento.entity.NotaFiscal;
 import br.com.porthal.experimento.entity.Produto;
 import br.com.porthal.experimento.persistence.NewPersistence;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.LocalBean;
@@ -71,7 +73,6 @@ public class NotaFiscalSession extends NewPersistence<NotaFiscal, Integer> {
 //            return false;
 //        }
 //    }
-    
     private NotaFiscal calculaTotalProdutos(NotaFiscal notaFiscal) {
 
         BigDecimal total = BigDecimal.ZERO;
@@ -117,6 +118,29 @@ public class NotaFiscalSession extends NewPersistence<NotaFiscal, Integer> {
         notaFiscal.setTotalNota(total.setScale(2, RoundingMode.HALF_EVEN));
 
         return notaFiscal;
+    }
+
+    public List<NotaFiscal> consultarPorCliente(Cliente cliente) {
+        List<NotaFiscal> listaNotas = new ArrayList<>();
+        try {
+            listaNotas = listByCriteria("cliente", cliente, NotaFiscal.class, "id");
+
+            System.out.println(listaNotas);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+
+        }
+
+        return listaNotas;
+    }
+
+    public BigDecimal somarNotas(List<NotaFiscal> notaFiscais) {
+        BigDecimal total = BigDecimal.ZERO;
+        for (NotaFiscal notaFiscal : notaFiscais) {
+            total = total.add(notaFiscal.getTotalNota());
+        }
+        return total;
     }
 
 }
