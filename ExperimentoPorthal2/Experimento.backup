@@ -1,4 +1,4 @@
---
+﻿--
 -- PostgreSQL database dump
 --
 
@@ -35,6 +35,11 @@ INSERT INTO cliente (id, nome) VALUES (3, 'ricardo');
 --
 
 
+INSERT INTO plano_conta (id, classificacao, tipo_conta, tipo_operacao, cliente) VALUES (1, '0', 'A', '1', 1);
+INSERT INTO plano_conta (id, classificacao, tipo_conta, tipo_operacao, cliente) VALUES (2, '0', 'S', '2', 1);
+
+
+
 
 --
 -- TOC entry 2141 (class 0 OID 46291)
@@ -69,11 +74,6 @@ INSERT INTO nota_fiscal (id, data_emissao, numero, total_frete, total_nota, tota
 -- Dependencies: 185
 -- Data for Name: plano_conta; Type: TABLE DATA; Schema: public; Owner: postgres
 --
-
-INSERT INTO plano_conta (id, classificacao, tipo_conta, tipo_operacao, cliente) VALUES (1, '0', 'A', '1', 1);
-INSERT INTO plano_conta (id, classificacao, tipo_conta, tipo_operacao, cliente) VALUES (2, '0', 'S', '2', 1);
-
-
 --
 -- TOC entry 2140 (class 0 OID 46256)
 -- Dependencies: 186
