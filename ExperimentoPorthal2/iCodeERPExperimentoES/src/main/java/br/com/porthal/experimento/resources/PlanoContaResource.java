@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -26,13 +27,13 @@ import javax.ws.rs.core.MediaType;
 @Path("/planoconta")
 public class PlanoContaResource {
 
-    @EJB
+    @Inject
     private PlanoSession planoSession;
 
-    @EJB
+    @Inject
     private NotaFiscalSession notaSession;
 
-    @EJB
+    @Inject
     private ClienteSession clienteSession;
 
     @GET

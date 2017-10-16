@@ -5,20 +5,18 @@
  */
 package br.com.porthal.experimento.resources;
 
+import br.com.porthal.experimento.ejb.ClienteSession;
 import br.com.porthal.experimento.ejb.NotaFiscalSession;
 import br.com.porthal.experimento.ejb.PlanoSession;
 import br.com.porthal.experimento.entity.Retorno;
 import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 /**
@@ -31,6 +29,8 @@ public class PlanoContaResourceTest extends JerseyTest {
     private PlanoSession planoSession;
     @Mock
     private NotaFiscalSession notaFiscalSession;
+        @Mock
+    private ClienteSession clienteSession;
 
     @Override
     public ResourceConfig configure() {
@@ -42,6 +42,7 @@ public class PlanoContaResourceTest extends JerseyTest {
                     protected void configure() {
                         bind(planoSession).to(PlanoSession.class);
                         bind(notaFiscalSession).to(NotaFiscalSession.class);
+                        bind(clienteSession).to(ClienteSession.class);
                     }
                 });
     }
