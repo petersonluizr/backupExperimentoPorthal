@@ -58,7 +58,7 @@ public class PlanoConta implements Serializable, MyInterfaceEntity {
     @NotNull(message = "Operação obrigatório")
     private Cliente cliente;
 
-    @OneToMany(mappedBy = "planoConta", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "planoConta", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     protected List<NotaFiscal> notasFiscais;
 
     //<editor-fold defaultstate="collapsed" desc="GET / SET">

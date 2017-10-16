@@ -60,6 +60,15 @@ public class NotaFiscalSession extends NewPersistence<NotaFiscal, Integer> {
         this.bulkSave(nfs);
     }
 
+    public boolean verificarCliente(List<NotaFiscal> nfs) {
+        for (NotaFiscal notaFiscal : nfs) {
+            if (!notaFiscal.getCliente().getId().equals(notaFiscal.getPlanoConta().getCliente().getId())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 //    private boolean verificaTotalFrete(NotaFiscal notaFiscal) {
 //
 //        BigDecimal total = BigDecimal.ZERO;
