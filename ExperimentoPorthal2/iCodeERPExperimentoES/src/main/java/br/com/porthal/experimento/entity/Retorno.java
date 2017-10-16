@@ -5,6 +5,7 @@
  */
 package br.com.porthal.experimento.entity;
 
+import java.io.Serializable;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -12,10 +13,14 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author douglas
  */
 @XmlRootElement
-public class Retorno {
+public class Retorno implements Serializable{
     private boolean sucesso;
     private String descricao;
 
+    public Retorno(){
+        
+    }
+    
     /**
      * @return the sucesso
      */
