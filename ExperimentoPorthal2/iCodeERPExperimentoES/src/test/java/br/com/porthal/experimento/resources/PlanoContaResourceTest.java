@@ -72,7 +72,7 @@ public class PlanoContaResourceTest extends JerseyTest {
         Retorno resposta = target("planoconta").request().post(userEntity, Retorno.class);
         Assert.assertEquals("Plano importado com sucesso", resposta.getDescricao());
     }
-
+    
     @Test
     public void testConsultarNF1() {
         Response response = target("planoconta/consultarnotasfiscais").request().get();
