@@ -192,28 +192,20 @@ public abstract class NewPersistence<T extends MyInterfaceEntity, PK extends Int
     public void setObject(T object) {
         this.object = object;
     }
-    
+
     @Transactional()
     public void bulkSave(Collection<T> entities) {
         EntityManager em = getEntityManager();
         int i = 0;
         int batchSize = 50;
         for (T t : entities) {
-            try {
-                em.merge(t);
-            } catch (Exception ex) {
-                System.out.println("Erro " + i + " " + ex.getMessage());
-            }
+            em.merge(t);
             System.out.println(i);
             i++;
             if (i % batchSize == 0) {
                 // Flush a batch of inserts and release memory.
-                try {
-                    em.flush();
-                    em.clear();
-                } catch (Exception ex) {
-                    System.out.println("Erro " + i + " " + ex.getMessage());
-                }
+                em.flush();
+                em.clear();
 
             }
         }

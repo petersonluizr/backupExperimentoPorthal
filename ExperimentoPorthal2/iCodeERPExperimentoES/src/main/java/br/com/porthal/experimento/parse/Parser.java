@@ -141,9 +141,9 @@ public class Parser {
         cliente.setNome(texto[9]);
 
         nota.setCliente(cliente);
-        nota.setTotalProdutos(new BigDecimal(texto[10]));
-        nota.setTotalNota(new BigDecimal(texto[12]));
-        nota.setTotalFrete(new BigDecimal(texto[11]));
+        nota.setTotalProdutos(getBigDecimal(texto[10]));
+        nota.setTotalNota(getBigDecimal(texto[12]));
+        nota.setTotalFrete(getBigDecimal(texto[11]));
         return nota;
     }
 
@@ -162,10 +162,10 @@ public class Parser {
         produto.setCorDimensoes(texto[1]);
         produto.setDescricao(texto[2]);
         produto.setQuantidade(getInt(texto[3]));
-        produto.setValorUnitario(new BigDecimal(texto[4]));
-        produto.setValorDesconto(new BigDecimal(texto[5]));
-        produto.setValorTotal(new BigDecimal(texto[6]));
-        produto.setValorTotalFrete(new BigDecimal(texto[7]));
+        produto.setValorUnitario(getBigDecimal(texto[4]));
+        produto.setValorDesconto(getBigDecimal(texto[5]));
+        produto.setValorTotal(getBigDecimal(texto[6]));
+        produto.setValorTotalFrete(getBigDecimal(texto[7]));
         return produto;
     }
 
@@ -177,7 +177,7 @@ public class Parser {
         try {
             return Long.parseLong(txt);
         } catch (NumberFormatException ex) {
-            return new Long(0);
+            return null;
         }
     }
 
@@ -185,7 +185,15 @@ public class Parser {
         try {
             return Integer.parseInt(txt);
         } catch (NumberFormatException ex) {
-            return new Integer(0);
+            return null;
         }
+    }
+    
+    private static BigDecimal getBigDecimal(String txt) {
+       try{
+           return new BigDecimal(txt);
+       }catch(Exception ex){
+           return null;
+       }
     }
 }
