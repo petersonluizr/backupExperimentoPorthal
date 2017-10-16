@@ -86,8 +86,9 @@ public class PlanoContaResource {
             retorno.setSucesso(false);
             retorno.setDescricao("O parâmetro fornecido não é um número.");
         } catch (Exception ex) {//implementar tratamento
+            ex.printStackTrace();
             retorno.setSucesso(false);
-            retorno.setDescricao("Ocorreu um erro ao importar: " + ex.getMessage());
+            retorno.setDescricao("Ocorreu um erro ao consultar: " + ex.getMessage());
         }
         return retorno;
     }
