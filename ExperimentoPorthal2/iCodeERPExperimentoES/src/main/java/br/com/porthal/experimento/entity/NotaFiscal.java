@@ -72,6 +72,23 @@ public class NotaFiscal implements Serializable, MyInterfaceEntity {
         return getProdutos().size();
     }
 
+    public NotaFiscal(Integer id, Long numero, Date dataEmissao, BigDecimal totalProdutos, BigDecimal totalNota, BigDecimal totalFrete, Cliente cliente, List<Produto> produtos, PlanoConta planoConta) {
+        this.id = id;
+        this.numero = numero;
+        this.dataEmissao = dataEmissao;
+        this.totalProdutos = totalProdutos;
+        this.totalNota = totalNota;
+        this.totalFrete = totalFrete;
+        this.cliente = cliente;
+        this.produtos = produtos;
+        this.planoConta = planoConta;
+    }
+
+    public NotaFiscal() {
+    }
+    
+    
+
     //<editor-fold defaultstate="collapsed" desc="GET / SET">
     /**
      * @return the id
