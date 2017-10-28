@@ -73,7 +73,7 @@ public class NotaFiscalSession extends NewPersistence<NotaFiscal, Integer> {
 //            return false;
 //        }
 //    }
-    private NotaFiscal calculaTotalProdutos(NotaFiscal notaFiscal) {
+    public NotaFiscal calculaTotalProdutos(NotaFiscal notaFiscal) {
 
         BigDecimal total = BigDecimal.ZERO;
         for (Produto produto : notaFiscal.getProdutos()) {
@@ -85,7 +85,7 @@ public class NotaFiscalSession extends NewPersistence<NotaFiscal, Integer> {
         return notaFiscal;
     }
 
-    private NotaFiscal calculaTotalFreteProduto(NotaFiscal notaFiscal) {
+    public NotaFiscal calculaTotalFreteProduto(NotaFiscal notaFiscal) {
 
         for (Produto produto : notaFiscal.getProdutos()) {
             produto.setValorTotalFrete((notaFiscal.getTotalFrete().divide(notaFiscal.getTotalProdutos()).multiply(produto.getValorTotal())).divide(BigDecimal.valueOf(notaFiscal.getQuantidadeProdutos())).setScale(2, RoundingMode.HALF_EVEN));
@@ -108,7 +108,7 @@ public class NotaFiscalSession extends NewPersistence<NotaFiscal, Integer> {
 //        return notaFiscal;
 //    }
 
-    private NotaFiscal calculaTotalNotaFiscal(NotaFiscal notaFiscal) {
+    public NotaFiscal calculaTotalNotaFiscal(NotaFiscal notaFiscal) {
 
         BigDecimal total = BigDecimal.ZERO;
         for (Produto produto : notaFiscal.getProdutos()) {

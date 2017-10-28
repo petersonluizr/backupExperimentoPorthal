@@ -7,6 +7,7 @@ import br.com.porthal.experimento.ejb.NotaFiscalSession;
 import br.com.porthal.experimento.ejb.PlanoSession;
 import br.com.porthal.experimento.entity.Cliente;
 import br.com.porthal.experimento.entity.NotaFiscal;
+import br.com.porthal.experimento.entity.Produto;
 import br.com.porthal.experimento.entity.Retorno;
 import br.com.porthal.experimento.parse.Parser;
 import java.math.BigDecimal;
@@ -73,6 +74,112 @@ public class PlanoContaResource {
                 retorno.setSucesso(false);
                 retorno.setDescricao("Ocorreu um erro ao importar: Deve haver um único Cliente.");
             }
+        } catch (Exception ex) {//implementar tratamento
+            retorno.setSucesso(false);
+            retorno.setDescricao("Ocorreu um erro ao importar: " + ex.getMessage());
+        }
+        return retorno;
+    }
+
+    @GET
+    @Path("/todoscalculos")
+    @Produces(MediaType.APPLICATION_XML)
+    public Retorno todoscalculos() {
+
+        Retorno retorno = new Retorno();
+        Cliente cliente = (Cliente) this.clienteSession.getById(4);
+        try {
+            ArrayList<NotaFiscal> nfs = (ArrayList<NotaFiscal>) this.notaSession.consultarPorCliente(cliente);
+            System.out.println("total de notas: " + nfs.size());
+
+            this.notaSession.importar(nfs);
+
+            String descricao = "Frete: ";
+            for (NotaFiscal notaFiscal : nfs) {
+                for (Produto produto : notaFiscal.getProdutos()) {
+                    descricao = descricao + "," + produto.getValorTotalFrete();
+                }
+            }
+            descricao = descricao + " \n Nota 1, total: " + nfs.get(0).getTotalProdutos() + " Nota 2, total: " + nfs.get(1).getTotalProdutos();
+            retorno.setSucesso(true);
+            retorno.setDescricao(descricao);
+
+        } catch (Exception ex) {//implementar tratamento
+            retorno.setSucesso(false);
+            retorno.setDescricao("Ocorreu um erro ao importar: " + ex.getMessage());
+        }
+        return retorno;
+    }
+
+    /**
+     * Peterson desenvolveu //VALOR_TOTAL = (VALOR_UNITARIO * QUANTIDADE) -
+     * VALOR_DESCONTO Status banco: criei 2 produtos com seus respectivos
+     * valores de um cliente novo, Peter, sob o id 4. Realizando o calulo acima
+     * a webservice deve retorar o valor de 2.125
+     *
+     * @param txt
+     * @return
+     */
+    @GET
+    @Path("/calcularvalortotalproduto")
+    @Produces(MediaType.APPLICATION_XML)
+    public Retorno calculoValorTotalProduto() {
+
+        Retorno retorno = new Retorno();
+        Cliente cliente = (Cliente) this.clienteSession.getById(4);
+        try {
+            ArrayList<NotaFiscal> nfs = (ArrayList<NotaFiscal>) this.notaSession.consultarPorCliente(cliente);
+            System.out.println("total de notas: " + nfs.size());
+            for (NotaFiscal notaFiscal : nfs) {
+                notaFiscal = this.notaSession.calculaTotalProdutos(notaFiscal);
+                // this.notaSession.calculaTotalProdutos(notaFiscal);
+                //this.notaSession.calculaTotalFreteProduto(notaFiscal);
+                // this.notaSession.calculaTotalNotaFiscal(notaFiscal);
+            }
+            this.notaSession.bulkSave(nfs);
+            retorno.setSucesso(true);
+            retorno.setDescricao("Nota 1, total: " + nfs.get(0).getTotalProdutos() + " Nota 2, total: " + nfs.get(1).getTotalProdutos());
+        } catch (Exception ex) {//implementar tratamento
+            retorno.setSucesso(false);
+            retorno.setDescricao("Ocorreu um erro ao importar: " + ex.getMessage());
+        }
+        return retorno;
+    }
+
+    /**
+     * Peterson desenvolveu //TOTAL_FRETE_PROD := ((( total_frete
+     * /total_produtos) *valor_total ) / quantidade);/ Status banco: criei 2
+     * produtos com seus respectivos valores de um cliente novo, Peter, sob o id
+     * 4. Realizando o calulo acima a webservice deve retorar o valor de
+     *
+     * @param txt
+     * @return
+     */
+    @GET
+    @Path("/calcularcustofreteporproduto")
+    @Produces(MediaType.APPLICATION_XML)
+    public Retorno calcularCustoFretePorProduto() {
+
+        Retorno retorno = new Retorno();
+        Cliente cliente = (Cliente) this.clienteSession.getById(4);
+        try {
+            ArrayList<NotaFiscal> nfs = (ArrayList<NotaFiscal>) this.notaSession.consultarPorCliente(cliente);
+            System.out.println("total de notas para calcular frete: " + nfs.size());
+            for (NotaFiscal notaFiscal : nfs) {
+                //notaFiscal = this.notaSession.calculaTotalProdutos(notaFiscal);
+                // this.notaSession.calculaTotalProdutos(notaFiscal);
+                notaFiscal = this.notaSession.calculaTotalFreteProduto(notaFiscal);
+                // this.notaSession.calculaTotalNotaFiscal(notaFiscal);
+            }
+            this.notaSession.bulkSave(nfs);
+            retorno.setSucesso(true);
+            String descricao = "vai ser> ";
+            for (NotaFiscal notaFiscal : nfs) {
+                for (Produto produto : notaFiscal.getProdutos()) {
+                    descricao = descricao + "," + produto.getValorTotalFrete();
+                }
+            }
+            retorno.setDescricao(descricao);
         } catch (Exception ex) {//implementar tratamento
             retorno.setSucesso(false);
             retorno.setDescricao("Ocorreu um erro ao importar: " + ex.getMessage());
